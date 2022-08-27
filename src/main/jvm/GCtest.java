@@ -12,6 +12,9 @@ public class GCtest {
         // 测试大对象直接进入永久代
 //        testPretenureSizeThreshold();
 
+        // 多次存活对象进入老年代
+        testTenuringThreshold();
+
     }
 
     private static final int _1MB = 1024 * 1024;
@@ -43,5 +46,25 @@ public class GCtest {
     public static void testPretenureSizeThreshold() {
         byte[] allocation;
         allocation = new byte[4 * _1MB];  //直接分配在老年代中
+    }
+
+    /**
+     * VM参数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseSerialGC -XX:MaxTenuringThreshold=1 -XX:+PrintTenuringDistribution
+     * VM参数：-verbose:gc -Xms20M -Xmx20M -Xmn10M -XX:+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseSerialGC -XX:MaxTenuringThreshold=15 -XX:+PrintTenuringDistribution
+     * -XX:MaxTenuringThreshold=1 多少次存活进入老年代
+     * -XX:+PrintTenuringDistribution 幸存区域年纪分布
+     */
+    @SuppressWarnings("unused")
+    public static void testTenuringThreshold() {
+        byte[] allocation1, allocation2, allocation3;
+        // 256KB什么时候进入老年代决定于XX:MaxTenuringThreshold设置
+        allocation1 = new byte[_1MB / 4];
+        // 4048KB
+        allocation2 = new byte[4 * _1MB];
+        // 4048KB Eden区占用 8352KB->第一次GC
+        allocation3 = new byte[4 * _1MB];
+        allocation3 = null;
+        // 第二次GC
+        allocation3 = new byte[4 * _1MB];
     }
 }
