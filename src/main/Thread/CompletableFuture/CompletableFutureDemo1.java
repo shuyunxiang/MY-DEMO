@@ -4,7 +4,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Supplier;
 
-public class CompletableFutureDemo {
+public class CompletableFutureDemo1 {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         GetUser getUser = new GetUser();
 
