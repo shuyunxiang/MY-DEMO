@@ -11,22 +11,18 @@ public class CompletableFutureDemo3 {
     public static void main(String[] args) throws Exception {
 
         CompletableFuture<String> base = new CompletableFuture<>();
-
         CompletableFuture<String> completion0 = base.thenApply(s -> {
             System.out.println("completion 0");
             return s + " 0";
         });
-
         CompletableFuture<String> completion1 = base.thenApply(s -> {
             System.out.println("completion 1");
             return s + " 1";
         });
-
         CompletableFuture<String> completion2 = base.thenApply(s -> {
             System.out.println("completion 2");
             return s + " 2";
         });
-
         completion1.thenApply(s -> {
             System.out.println("completion 3");
             return s + " 3";
@@ -54,6 +50,9 @@ public class CompletableFutureDemo3 {
             return s + " 8";
         });
 
+        // 注意区分不同,这里会有栈空间的切换
         base.complete("start");
+        // 这里直接执行栈空间
+//        completion1.complete("start");
     }
 }
