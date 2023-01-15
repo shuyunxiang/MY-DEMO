@@ -1,9 +1,12 @@
 package IO.Net.Bio;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * 功能：
@@ -19,20 +22,26 @@ public class ClientBioDemo {
 
         Socket socket = new Socket(InetAddress.getLocalHost(), 9988);
 
-        socket.getOutputStream().write(("[我是客户端请求消息" + System.currentTimeMillis() + "]").getBytes(StandardCharsets.UTF_8));
-        socket.shutdownOutput();
-
+        OutputStream outputStream = socket.getOutputStream();
+        InputStream inputStream = socket.getInputStream();
 
         byte[] recvByteBuf = new byte[1024];
-        StringBuilder resp = new StringBuilder();
-        while (true) {
-            int len = socket.getInputStream().read(recvByteBuf);
-            if(len==-1){
-                break;
-            }
-            resp.append(new String(recvByteBuf, 0, len, StandardCharsets.UTF_8));
+
+        Scanner sco = new Scanner(System.in);
+        while (sco.hasNext()) {
+
+            // 写入数据
+            outputStream.write(sco.nextLine().getBytes(StandardCharsets.UTF_8));
+
+            // 获取数据
+            int len = inputStream.read(recvByteBuf);
+
+            // 获取响应
+            System.out.println("收到服务端返回消息: "
+                    .concat(new String(recvByteBuf, 0, len, StandardCharsets.UTF_8) + ",time = " + System.currentTimeMillis()));
         }
-        System.out.println("收到服务端返回消息: " + resp.toString() + ",time = " + System.currentTimeMillis());
 
     }
+
+
 }
